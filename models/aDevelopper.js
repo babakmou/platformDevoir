@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const extendSchema = require('mongoose-extend-schema');
 const Question = require('./question');
 
-const aDevelopperSchema = extendSchema(Question, {
+const aDevelopperSchema = extendSchema(Question.schema, {
     reponse:{
         type: String,
         required:false

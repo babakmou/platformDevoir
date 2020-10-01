@@ -1,21 +1,18 @@
 const mongoose = require('mongoose');
+const Enseignant = require('./enseignant');
 
 const questionSchema  = new mongoose.Schema({
     titre: {
         type:String,
         required: true
     },
-    bonReponse:{
+    bonneReponse:{
         type: String,
         required: false
     },
-    note:{
-        type:Number,
-        required: false
-    },
-    enseignantID:{
-        type:String,
-        required:true
+    enseignant:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'Enseignant'
     }
 });
 

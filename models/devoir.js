@@ -1,32 +1,64 @@
 const mongoose = require('mongoose');
+// const question = require('./question');
+const Enseignant = require('./enseignant');
+// const QCM = require('../models/qcm');
+// const ADevelopper = require('../models/qcm');
+// const VraiFaux = require('../models/qcm');
 
-const devoirSchema= new mongoose.Schema(
+const childSchema = new mongoose.Schema(
     {
-        cours:{
-            type:String,
-            required: false
+        question: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            refPath: 'onModel'
         },
-        dateRemise:{
-            type:Date,
-            required: true
+        noteAssignee: {
+            type: Number,
+            default: 0.0
         },
-        noteTotale:{
-            type:Number,
-            required: false
+        noteObtenue: {
+            type: Number,
+            default: 0.0
         },
-        statut:{
-            type:Boolean,
-            required: true
-        },
-        questions:{
-            type:Array,
-            required:true
-        },
-        enseignantID:{
-            type:String,
-            required:true
+        onModel: {
+            type: String,
+            required: true,
+            enum: ['QCM', 'ADevelopper','VraiFaux']
         }
     }
 );
 
-module.exports= mongoose.model('Devoir', devoirSchema);
+const devoirSchema = new mongoose.Schema(
+    {
+        enseignant: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Enseignant'
+        },
+        cours: {
+            type: String,
+            required: false
+        },
+        dateRemise: {
+            type: Date,
+            required: true
+        },
+        noteTotale: {
+            type: Number,
+            default: 0.0
+        },
+        statut: {
+            type: Boolean,
+            default: true
+        },
+        // questions:{
+        //     type: Array,
+        //     default:[{}]
+        // }
+        questions: {
+            type: [childSchema],
+            default: {}
+        }
+    }
+);
+
+module.exports = mongoose.model('Devoir', devoirSchema);

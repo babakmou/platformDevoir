@@ -41,16 +41,18 @@ router.get('/:id', getEtudiant, (req, res) => {
 router.delete('/:id', getEtudiant, async (req, res) => {
   try {
     await res.etudiant.remove()
-    res.json({ message: "L'enseignant est supprime" })
+    res.json({ message: "L'etudiant est supprime" })
     } catch(err) {
     res.status(500).json({ message: err.message })
     }
 });
 
-//Modifier un etudiant(ajouter des travaux)
+//Modifier un etudiant(ajouter ou modifier des travaux)
 router.patch('/:id', getEtudiant, async (req, res) => {
-  if (req.body.travaux != null) {
-  res.etudiant.travaux = req.body.travaux;
+  if (req.body._id != null) {
+  for(t in res.etudiant.travaux){
+    
+  }
   }
   try {
   const updatedEtudiant = await res.etudiant.save()
@@ -63,15 +65,16 @@ router.patch('/:id', getEtudiant, async (req, res) => {
 //Middleware
 async function getEtudiant(req, res, next) {
   try {
-  etudiant = await Etudiant.findById(req.params.id)
+  var etudiant = await Etudiant.findById(req.params.id)
   if (etudiant == null) {
-  return res.status(404).json({ message: 'Enseignant introuvable'})
+  return res.status(404).json({ message: 'Etudiant introuvable'})
   }
   } catch(err){
   return res.status(500).json({ message: err.message })
   }
-  res.etudiant = etudiant
-  next()
+  console.log(etudiant);
+  res.etudiant = etudiant;
+  next();
   }
 
 module.exports = router;

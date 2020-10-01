@@ -1,5 +1,4 @@
 var express = require('express');
-const enseignant = require('../models/enseignant');
 var router = express.Router();
 const Enseignant = require('../models/enseignant');
 
@@ -8,8 +7,8 @@ const Enseignant = require('../models/enseignant');
 router.post('/', async (req, res) => {
 
   const enseignant = new Enseignant({
-    prenom: req.body.prenom,
     nom: req.body.nom,
+    prenom: req.body.prenom,
     courriel: req.body.courriel,
     motDePasse: req.body.motDePasse,
   });
@@ -50,7 +49,7 @@ router.delete('/:id', getEnseignant, async (req, res) => {
 //Middleware
 async function getEnseignant(req, res, next) {
   try {
-  enseignant = await Enseignant.findById(req.params.id)
+  var enseignant = await Enseignant.findById(req.params.id)
   if (enseignant == null) {
   return res.status(404).json({ message: 'Enseignant introuvable'})
   }
