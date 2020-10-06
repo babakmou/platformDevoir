@@ -50,10 +50,6 @@ const devoirSchema = new mongoose.Schema(
             type: Boolean,
             default: true
         },
-        // questions:{
-        //     type: Array,
-        //     default:[{}]
-        // }
         questions: {
             type: [childSchema],
             default: {}

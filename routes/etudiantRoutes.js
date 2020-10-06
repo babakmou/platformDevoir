@@ -1,7 +1,7 @@
 var express = require('express');
-const etudiant = require('../models/etudiant');
 var router = express.Router();
 const Etudiant = require('../models/etudiant');
+const Devoir = require('../models/devoir');
 
 //S'inscrire un etudiant
 router.post('/', async (req, res) => {
@@ -23,12 +23,12 @@ router.post('/', async (req, res) => {
 });
 
 //Consulter tous les etudiants
-router.get('/', async(req, res) =>{
+router.get('/', async (req, res) => {
   try {
     const etudiants = await Etudiant.find();
     res.status(200).json(etudiants);
-  }catch{
-    res.status(500).json({message:err.message});
+  } catch {
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -42,39 +42,74 @@ router.delete('/:id', getEtudiant, async (req, res) => {
   try {
     await res.etudiant.remove()
     res.json({ message: "L'etudiant est supprime" })
-    } catch(err) {
+  } catch (err) {
     res.status(500).json({ message: err.message })
-    }
+  }
 });
 
-//Modifier un etudiant(ajouter ou modifier des travaux)
-router.patch('/:id', getEtudiant, async (req, res) => {
-  if (req.body._id != null) {
-  for(t in res.etudiant.travaux){
-    
+// Assigner un devoir a une etudiant
+// Repondre aux question par etudiant
+// Modifier les note de devoir par enseignant
+router.patch('/:id/devoirs/:idDevoir', getEtudiant, getDevoir, async (req, res) => {
+
+  let devoirExiste = false;
+
+  for (let i = 0; i < res.etudiant.travaux.length; i++) {
+    console.log('I am hereeeee');
+    if (res.etudiant.travaux[i]._id == req.params.idDevoir) {
+      res.etudiant.travaux.splice(i, 1);
+      devoirExiste = true;
+    }
   }
+  if (!devoirExiste) {
+    res.etudiant.travaux.push(res.devoir);
+  } else {
+    res.etudiant.travaux.push(req.body);
   }
   try {
-  const updatedEtudiant = await res.etudiant.save()
-  res.status(200).json(updatedEtudiant._id);
-  } catch {
-  res.status(400).json({ message: err.message })
+    const updatedEtudiant = await res.etudiant.save()
+    res.status(201).json(updatedEtudiant._id);
+  } catch (err) {
+    res.status(400).json({ message: err.message })
   }
-  });
+});
+
+// //Modifier un etudiant
+// router.patch('/:id', getEtudiant, async (req, res) => {
+
+//   try {
+//   const updatedEtudiant = await res.etudiant.save()
+//   res.status(200).json(updatedEtudiant._id);
+//   } catch {
+//   res.status(400).json({ message: err.message })
+//   }
+//   });
 
 //Middleware
 async function getEtudiant(req, res, next) {
   try {
-  var etudiant = await Etudiant.findById(req.params.id)
-  if (etudiant == null) {
-  return res.status(404).json({ message: 'Etudiant introuvable'})
+    var etudiant = await Etudiant.findById(req.params.id)
+    if (etudiant == null) {
+      return res.status(404).json({ message: 'Etudiant introuvable' })
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message })
   }
-  } catch(err){
-  return res.status(500).json({ message: err.message })
-  }
-  console.log(etudiant);
   res.etudiant = etudiant;
   next();
+}
+
+async function getDevoir(req, res, next) {
+  try {
+    var devoir = await Devoir.findById(req.params.idDevoir);
+    if (devoir == null) {
+      return res.status(404).json({ message: 'Devoir introuvable' });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
+  res.devoir = devoir;
+  next()
+}
 
 module.exports = router;
