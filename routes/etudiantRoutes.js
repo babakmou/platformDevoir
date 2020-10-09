@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const Etudiant = require('../models/etudiant');
 const Devoir = require('../models/devoir');
+const mongoose = require('mongoose');
 
 //S'inscrire un etudiant
 router.post('/', async (req, res) => {
@@ -55,7 +56,6 @@ router.patch('/:id/devoirs/:idDevoir', getEtudiant, getDevoir, async (req, res) 
   let devoirExiste = false;
 
   for (let i = 0; i < res.etudiant.travaux.length; i++) {
-    console.log('I am hereeeee');
     if (res.etudiant.travaux[i]._id == req.params.idDevoir) {
       res.etudiant.travaux.splice(i, 1);
       devoirExiste = true;
@@ -74,19 +74,12 @@ router.patch('/:id/devoirs/:idDevoir', getEtudiant, getDevoir, async (req, res) 
   }
 });
 
-// //Modifier un etudiant
-// router.patch('/:id', getEtudiant, async (req, res) => {
-
-//   try {
-//   const updatedEtudiant = await res.etudiant.save()
-//   res.status(200).json(updatedEtudiant._id);
-//   } catch {
-//   res.status(400).json({ message: err.message })
-//   }
-//   });
 
 //Middleware
 async function getEtudiant(req, res, next) {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    return res.status(404).json({ message: 'Id invalide' });
+
   try {
     var etudiant = await Etudiant.findById(req.params.id)
     if (etudiant == null) {

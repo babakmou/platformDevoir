@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "test": "jest --watchAll --verbose"
   },
   "dependencies": {
+    "config": "^3.3.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
@@ -13,10 +15,11 @@
     "jade": "~1.11.0",
     "mongoose": "^5.10.5",
     "mongoose-extend-schema": "^1.0.0",
-    "mongoose-schema-extend": "^0.2.2",
     "morgan": "~1.9.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "jest": "^26.5.2",
+    "nodemon": "^2.0.4",
+    "supertest": "^5.0.0"
   }
 }
