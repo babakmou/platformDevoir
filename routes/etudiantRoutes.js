@@ -23,6 +23,23 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.post('/login', async (req, res) => {
+  let courriel = req.body.courriel;
+  let motDePasse = req.body.motDePasse;
+  
+  if (courriel && motDePasse) {
+
+    try {
+
+      let etudiant = await Etudiant.findOne({ courriel: courriel, motDePasse: motDePasse });
+      if (etudiant) res.status(200).json([etudiant._id]);
+      else res.status(400).json({ message: err.message })
+    } catch (err) {
+      res.status(500).json({ message: err.message })
+    }
+  }
+});
+
 //Consulter tous les etudiants
 router.get('/', async (req, res) => {
   try {
@@ -46,6 +63,11 @@ router.delete('/:id', getEtudiant, async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message })
   }
+});
+
+//Consulter les  devoirs de l'etudiant par ID
+router.get('/:id/devoir', getEtudiant, (req, res) => {
+  res.status(200).json(res.etudiant.travaux);
 });
 
 // Assigner un devoir a une etudiant

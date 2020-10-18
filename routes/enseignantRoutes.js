@@ -21,6 +21,23 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.post('/login', async (req, res) => {
+  let courriel = req.body.courriel;
+  let motDePasse = req.body.motDePasse;
+  
+  if (courriel && motDePasse) {
+
+    try {
+
+      let enseignant = await Enseignant.findOne({ courriel: courriel, motDePasse: motDePasse });
+      if (enseignant) res.status(200).json(enseignant._id);
+      else res.status(400).json({ message: err.message })
+    } catch (err) {
+      res.status(500).json({ message: err.message })
+    }
+  }
+});
+
 //Consulter tous les enseignants
 router.get('/', async(req, res) =>{
   try {

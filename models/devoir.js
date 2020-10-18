@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
-// const question = require('./question');
 const Enseignant = require('./enseignant');
-// const QCM = require('../models/qcm');
-// const ADevelopper = require('../models/qcm');
-// const VraiFaux = require('../models/qcm');
+
 
 const childSchema = new mongoose.Schema(
     {
