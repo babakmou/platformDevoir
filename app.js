@@ -10,10 +10,11 @@ var usersRouter = require('./routes/users');
 const mongoose = require('mongoose');
 const enseignantRouter = require('./routes/enseignantRoutes');
 const etudiantRouter = require('./routes/etudiantRoutes');
-const qcmRouter = require('./routes/qcmRoutes');
-const vraiFauxRouter = require('./routes/vraiFauxRoutes');
-const aDevelopperRouter = require('./routes/aDevelopperRoutes');
-const devoirRouter = require('./routes/devoirRoutes');
+const userRouter = require('./routes/userRoutes');
+const mcqRouter = require('./routes/mcqRoutes');
+const trueFalseRouter = require('./routes/trueFalseRoutes');
+const essayRouter = require('./routes/essayRoutes');
+const examRouter = require('./routes/examRoutes');
 
 var app = express();
 
@@ -31,10 +32,11 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/enseignants', enseignantRouter);
 app.use('/api/etudiants', etudiantRouter);
-app.use('/api/qcms', qcmRouter);
-app.use('/api/adeveloppers', aDevelopperRouter);
-app.use('/api/vraifaux', vraiFauxRouter);
-app.use('/api/devoirs', devoirRouter);
+app.use('/api/users', userRouter);
+app.use('/api/mcqs', mcqRouter);
+app.use('/api/essays', essayRouter);
+app.use('/api/truefalses', trueFalseRouter);
+app.use('/api/exams', examRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

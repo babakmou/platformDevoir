@@ -1,54 +1,54 @@
 var express = require('express');
 var router = express.Router();
-const Devoir = require('../models/devoir');
-const Enseignant = require('../models/enseignant');
+const Exam = require('../models/exam');
+const User = require('../models/user');
 // const QCM = require('../models/qcm');
 // const ADevelopper = require('../models/aDevelopper');
 // const VraiFaux = require('../models/vraiFaux');
 
 
-//Creer un devoir
+//Creating an exam
 router.post('/', async (req, res) => {
 
-  const enseignant = await Enseignant.findById(req.body.enseignantId);
-  if (!enseignant) return res.status(400).json({ message: err.message });
+  const user = await User.findById(req.body.teacher);
+  if (!user) return res.status(400).json({ 'message': 'Invalid user Id' });
 
-  const devoir = new Devoir({
-    dateRemise: req.body.dateRemise,
-    // statut: req.body.statut,
+  const exam = new Exam({
+    title: req.body.title,
+    deadline: req.body.deadline,
+    status: req.body.status,
     questions: req.body.questions,
-    enseignant: req.body.enseignantId
+    teacher: user._id
   });
 
   try {
-    const newDevoir = await devoir.save();
-    res.status(201).json(newDevoir._id);
+    const newExam = await exam.save();
+    res.status(201).json(newExam._id);
   } catch (err) {
     res.status(400).json({ message: err.message })
   }
 });
 
-//Consulter tous les devoirs
+//Getting all exams
 router.get('/', async (req, res) => {
   try {
-    const devoirs = await Devoir.find();
-    console.log(devoirs[1].questions[1].question);
+    const devoirs = await Exam.find();
     res.status(200).json(devoirs);
   } catch {
     res.status(500).json({ message: err.message });
   }
 });
 
-//Consulter le devoir par ID
-router.get('/:id', getDevoir, (req, res) => {
-  res.status(200).json(res.devoir);
+//Getting an exam by Id
+router.get('/:id', getExam, (req, res) => {
+  res.status(200).json(res.exam);
 });
 
-//Supprimer un devoir
-router.delete('/:id', getDevoir, async (req, res) => {
+//Deleting an exam
+router.delete('/:id', getExam, async (req, res) => {
   try {
-    await res.devoir.remove();
-    res.json({ message: "Le devoir est supprime" });
+    await res.exam.remove();
+    res.json({ message: 'Exam was deleted.' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -71,16 +71,16 @@ router.delete('/:id', getDevoir, async (req, res) => {
 // });
 
 //Middleware
-async function getDevoir(req, res, next) {
+async function getExam(req, res, next) {
   try {
-    devoir = await Devoir.findById(req.params.id);
-    if (devoir == null) {
-      return res.status(404).json({ message: 'Enseignant introuvable' });
+    let exam = await Exam.findById(req.params.id);
+    if (exam == null) {
+      return res.status(404).json({ message: 'Exam not found' });
     }
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
-  res.devoir = devoir;
+  res.exam = exam;
   next()
 }
 

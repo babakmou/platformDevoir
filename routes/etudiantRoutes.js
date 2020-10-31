@@ -1,18 +1,21 @@
+const Joi = require('joi');
 var express = require('express');
 var router = express.Router();
 const Etudiant = require('../models/etudiant');
-const Devoir = require('../models/devoir');
+const Devoir = require('../models/exam');
 const mongoose = require('mongoose');
 
 //S'inscrire un etudiant
 router.post('/', async (req, res) => {
+  const { error } = validateEtudiant(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
   const etudiant = new Etudiant({
     prenom: req.body.prenom,
     nom: req.body.nom,
     courriel: req.body.courriel,
     motDePasse: req.body.motDePasse,
-    travaux: req.body.travaux
+    // travaux: req.body.travaux
   });
 
   try {
@@ -26,7 +29,7 @@ router.post('/', async (req, res) => {
 router.post('/login', async (req, res) => {
   let courriel = req.body.courriel;
   let motDePasse = req.body.motDePasse;
-  
+
   if (courriel && motDePasse) {
 
     try {
@@ -96,6 +99,16 @@ router.patch('/:id/devoirs/:idDevoir', getEtudiant, getDevoir, async (req, res) 
   }
 });
 
+function validateEtudiant(enseignant) {
+  const schema = {
+    nom: Joi.string().min(3).required(),
+    prenom: Joi.string().min(3).required(),
+    courriel: Joi.string().required(),
+    motDePasse: Joi.string().min(6).required()
+  };
+
+  return Joi.validate(enseignant, schema);
+}
 
 //Middleware
 async function getEtudiant(req, res, next) {

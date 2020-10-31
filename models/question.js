@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
-const Enseignant = require('./enseignant');
+const User = require('./user');
 
 const questionSchema  = new mongoose.Schema({
-    titre: {
+    title: {
         type:String,
         required: true
     },
-    bonneReponse:{
+    correctAnswer:{
         type: String,
         required: false
     },
-    enseignant:{
+    teacher:{
         type:mongoose.Schema.Types.ObjectId,
-        ref: 'Enseignant'
+        ref: 'User'
     }
 });
 

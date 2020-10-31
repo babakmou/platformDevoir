@@ -2,23 +2,23 @@ const mongoose = require('mongoose');
 const extendSchema = require('mongoose-extend-schema');
 const Question = require('./question');
 
-const qcmSchema = extendSchema(Question.schema, {
-    reponse1:{
+const mcqSchema = extendSchema(Question.schema, {
+    answer1:{
         type:String,
         required: true
     },
-    reponse2:{
+    answer2:{
         type:String,
         required: true
     },
-    reponse3:{
+    answer3:{
         type:String,
         required: true
     },
-    reponse4:{
+    answer4:{
         type:String,
         required: true
     }
 });
 
-module.exports= mongoose.model('QCM', qcmSchema);
+module.exports= mongoose.model('MCQ', mcqSchema);

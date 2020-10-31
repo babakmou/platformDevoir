@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Enseignant = require('./enseignant');
+const User = require('./user');
 
 
 const childSchema = new mongoose.Schema(
@@ -9,49 +9,52 @@ const childSchema = new mongoose.Schema(
             required: true,
             refPath: 'onModel'
         },
-        noteAssignee: {
+        assignedScore: {
             type: Number,
             default: 0.0
         },
-        noteObtenue: {
+        gainedScore: {
             type: Number,
             default: 0.0
         },
         onModel: {
             type: String,
             required: true,
-            enum: ['QCM', 'ADevelopper','VraiFaux']
+            enum: ['MCQ', 'Essay','TrueFalse']
         }
     }
 );
 
-const devoirSchema = new mongoose.Schema(
+const examSchema = new mongoose.Schema(
     {
-        enseignant: {
+        teacher: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Enseignant'
+            ref: 'User'
         },
-        cours: {
+        title: {
+            type: String,
+            required: true
+        },
+        course: {
             type: String,
             required: false
         },
-        dateRemise: {
+        deadline: {
             type: Date,
             required: true
         },
-        noteTotale: {
+        totalScore: {
             type: Number,
             default: 0.0
         },
-        statut: {
+        status: {
             type: Boolean,
             default: true
         },
         questions: {
-            type: [childSchema],
-            default: {}
+            type: [childSchema]
         }
     }
 );
 
-module.exports = mongoose.model('Devoir', devoirSchema);
+module.exports = mongoose.model('Exam', examSchema);
